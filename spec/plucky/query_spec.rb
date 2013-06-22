@@ -182,6 +182,11 @@ describe Plucky::Query do
       subject[:name].should     be_nil
     end
 
+    it "allows total_entries overrides" do
+      docs = subject.paginate(:total_entries => 1)
+      docs.total_entries.should == 1
+    end
+
     context "with options" do
       before do
         @result = @query.sort(:age).paginate(:age.gt => 27, :per_page => 10)
@@ -314,7 +319,7 @@ describe Plucky::Query do
     end
 
     it "works with options" do
-      lambda { described_class.new(@collection).remove({:age.lte => 28}, :safe => true) }.should change { @collection.count }
+      lambda { described_class.new(@collection).remove({:age.lte => 28}, :w => 1) }.should change { @collection.count }
     end
 
     it "does not modify original query object" do

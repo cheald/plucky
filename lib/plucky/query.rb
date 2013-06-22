@@ -53,8 +53,9 @@ module Plucky
       def paginate(opts={})
         page      = opts.delete(:page)
         limit     = opts.delete(:per_page) || per_page
+        total_entries = opts.delete(:total_entries)
         query     = clone.amend(opts)
-        paginator = Pagination::Paginator.new(query.count, page, limit)
+        paginator = Pagination::Paginator.new(total_entries || query.count, page, limit)
         docs      = query.amend({
           :limit => paginator.limit,
           :skip  => paginator.skip,
@@ -162,7 +163,7 @@ module Plucky
       end
 
       def exists?(query_options={})
-        !fields(:_id => 1).find_one(query_options).nil?
+        !only(:_id).find_one(query_options).nil?
       end
 
       alias_method :each,   :find_each
